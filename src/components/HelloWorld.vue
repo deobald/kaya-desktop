@@ -2,16 +2,30 @@
 defineProps<{
   msg: string
 }>()
+
+import { ref } from 'vue';
+
+const friends = ref(null);
+
+const checkNeighbours2 = (): void => {
+  const path = '/rest/system/discovery';
+  const headers = {
+    'Authorization': 'Bearer kVbbrXED7cWkhv7kt9UwoqpsdpkGpb9e', // ${process.env.SYNCTHING_API_KEY} ... works in Electron
+    'Content-Type': 'application/json'
+  };
+  fetch(`http://localhost:8384${path}`, { headers })
+    .then(response => response.json())
+    .then(data => friends.value = data);
+};
+
 </script>
 
 <template>
   <div class="greetings">
-    <h1 class="green">{{ msg }}</h1>
-    <h3>
-      You’ve successfully created a project with
-      <a href="https://vite.dev/" target="_blank" rel="noopener">Vite</a> +
-      <a href="https://vuejs.org/" target="_blank" rel="noopener">Vue 3</a>.
-    </h3>
+    <button @click="checkNeighbours2()">Check Neighbours</button>
+    <p>{{ friends }}</p>
+    <!-- <h1 class="green">{{ msg }}</h1> -->
+    
   </div>
 </template>
 
@@ -39,3 +53,4 @@ h3 {
   }
 }
 </style>
+

@@ -4,6 +4,7 @@ import started from 'electron-squirrel-startup';
 
 const electron = require('electron');
 const net = electron.net;
+const spawn = require("child_process").spawn;
 
 // HACK: find the tray with some sort of channeling or singaling instead
 let tray:Tray = null;
@@ -21,6 +22,7 @@ const createWindow = () => {
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      webSecurity: false // Disable CORS security (TODO: probably solve this with a proxy or something nicer?)
     },
   });
 
@@ -72,6 +74,7 @@ const findWindow = (): BrowserWindow => {
   if (BrowserWindow.getAllWindows().length != 1) {
     throw RangeError("Too many windows.");
   }
+  console.log("finding window 0...");
   return BrowserWindow.getAllWindows()[0];
 };
 
@@ -102,7 +105,28 @@ const checkHealth = (): void => {
   request.on('response', (response:IncomingMessage) => {
     console.log(`STATUS: ${response.statusCode}`);
   })
+  request.on('error', (error:Error) => {
+    console.log("Syncthing not running...trying to start Syncthing...");
+    spawn("syncthing", ["serve"]);
+  })
   request.setHeader('Content-Type', 'application/json');
+  request.end();
+};
+
+const checkNeighbours = (): void => {
+  const request = net.request({
+    method: 'GET',
+    protocol: 'http:',
+    hostname: '127.0.0.1',
+    port: 8384,
+    path: '/rest/system/discovery'
+  });
+  request.on('response', (response:IncomingMessage) => {
+    console.log(`STATUS: ${response.statusCode}`);
+    response.on('data', (chunk) => { console.log(chunk.toString()); });
+  });
+  request.setHeader('Content-Type', 'application/json');
+  request.setHeader('Authorization', `Bearer ${process.env.SYNCTHING_API_KEY}`);
   request.end();
 };
 
@@ -119,6 +143,7 @@ const onClickHide = (menuItem:MenuItem, window:BaseWindow, e:KeyboardEvent): voi
 };
 
 app.whenReady().then(() => {
+  console.log("setting tray icon");
   tray = new Tray('/home/steven/work/deobald/kaya-desktop/fire.png');
   tray.setToolTip('Kaya');
 
@@ -130,4 +155,6 @@ app.whenReady().then(() => {
 
   console.log("Checking health...");
   checkHealth();
+  
+  // checkNeighbours();
 });
