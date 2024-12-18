@@ -62,6 +62,9 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
+  // Send the API KEY
+  console.log(`send: set-api-key to ${process.env.SYNCTHING_API_KEY}`);
+  findWindow().webContents.send('set-api-key', process.env.SYNCTHING_API_KEY);
 });
 
 // In this file you can include the rest of your app's specific main process
