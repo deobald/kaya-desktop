@@ -11,37 +11,40 @@ const lastPair = ref(null);
 const devices = ref(null);
 const events = ref(null);
 
+const headersWithKey = (): {} => {
+  const apiKey = document.getElementById('api-key').innerHTML;
+  console.log(`api key in innerHtml: ${apiKey}`);
+  return {
+    'Authorization': `Bearer ${apiKey}`,
+    'Content-Type': 'application/json'
+  };
+}
+
+const request = (): {} => {
+  return {
+    headers: headersWithKey()
+  }
+}
+
 const checkNeighbours2 = (): void => {
   // const path = '/rest/system/connections'; // connected devices and this device (as not connected), but only when there is another device connected...?
   const path = '/rest/system/discovery'; // contains "nearby devices"! <3
   // const path = '/rest/cluster/pending/devices'; // does not contain "nearby devices" :(
-  const headers = {
-    'Authorization': 'Bearer kVbbrXED7cWkhv7kt9UwoqpsdpkGpb9e', // ${process.env.SYNCTHING_API_KEY} ... only works in Electron
-    'Content-Type': 'application/json'
-  };
-  fetch(`http://localhost:8384${path}`, { headers })
+  fetch(`http://localhost:8384${path}`, request())
     .then(response => response.json())
     .then(data => neighbours.value = Object.keys(data));
 };
 
 const checkDevices = (): void => {
   const path = '/rest/config/devices';
-  const headers = {
-    'Authorization': 'Bearer kVbbrXED7cWkhv7kt9UwoqpsdpkGpb9e',
-    'Content-Type': 'application/json'
-  };
-  fetch(`http://localhost:8384${path}`, { headers })
+  fetch(`http://localhost:8384${path}`, request())
     .then(response => response.json())
     .then(data => devices.value = data);
 };
 
 const checkEvents = (): void => {
   const path = '/rest/events?events=DeviceConnected,DeviceDiscovered';
-  const headers = {
-    'Authorization': 'Bearer kVbbrXED7cWkhv7kt9UwoqpsdpkGpb9e',
-    'Content-Type': 'application/json'
-  };
-  fetch(`http://localhost:8384${path}`, { headers })
+  fetch(`http://localhost:8384${path}`, request())
     .then(response => response.json())
     .then(data => devices.value = data);
 };
@@ -50,13 +53,9 @@ const pairWith = (deviceID:string): void => {
   const newDevice = createDevice(deviceID, "ziggo");
 
   const path = `/rest/config/devices`; // /${deviceID}
-  const headers = {
-    'Authorization': 'Bearer kVbbrXED7cWkhv7kt9UwoqpsdpkGpb9e',
-    'Content-Type': 'application/json'
-  };
   fetch(`http://localhost:8384${path}`, { 
     method: 'POST',
-    headers: headers,
+    headers: headersWithKey(),
     body: JSON.stringify(newDevice)
   })
     // .then(response => {
@@ -67,10 +66,6 @@ const pairWith = (deviceID:string): void => {
 
 const createFolder = (): void => {
   const path = '/rest/config/folders';
-  const headers = {
-    'Authorization': 'Bearer kVbbrXED7cWkhv7kt9UwoqpsdpkGpb9e', // ${process.env.SYNCTHING_API_KEY} ... only works in Electron
-    'Content-Type': 'application/json'
-  };
   // fetch(`http://localhost:8384${path}`, { 
   //   method: 'POST',
   //   headers: {

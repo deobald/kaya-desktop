@@ -1,4 +1,4 @@
-import { app, BaseWindow, BrowserWindow, IncomingMessage, Menu, MenuItem, Tray } from 'electron';
+import { app, BaseWindow, BrowserWindow, IncomingMessage, Menu, MenuItem, Tray, ipcMain } from 'electron';
 import path from 'path';
 import started from 'electron-squirrel-startup';
 
@@ -136,6 +136,9 @@ const onClickQuit = (menuItem:MenuItem, window:BaseWindow, e:KeyboardEvent): voi
 
 const onClickShow = (menuItem:MenuItem, window:BaseWindow, e:KeyboardEvent): void => {
   findWindow().show();
+  // Send the API KEY
+  console.log(`send: set-api-key to ${process.env.SYNCTHING_API_KEY}`);
+  findWindow().webContents.send('set-api-key', process.env.SYNCTHING_API_KEY);
 };
 
 const onClickHide = (menuItem:MenuItem, window:BaseWindow, e:KeyboardEvent): void => {
@@ -157,4 +160,8 @@ app.whenReady().then(() => {
   checkHealth();
   
   // checkNeighbours();
+
+  // Send the API KEY
+  console.log("send: set-api-key");
+  findWindow().webContents.send('set-api-key', process.env.SYNCTHING_API_KEY);
 });

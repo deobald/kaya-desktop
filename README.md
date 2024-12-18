@@ -7,6 +7,8 @@
     * [ ] check if it's running again
     * [ ] check service on a loop
 * [ ] if syncthing is running, steal the API key, yo
+    * [x] from `SYNCTHING_API_KEY`
+    * [ ] from Syncthing itself (via Electron)
 * [ ] auto-create `~/.kaya`
     * [ ] back up existing to `~/.kaya.bak`? or just leave it?
 * [-] show nearby devices
