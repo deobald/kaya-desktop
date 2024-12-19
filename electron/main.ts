@@ -6,10 +6,13 @@ import appIcon from './assets/fire_32px.png';
 const electron = require('electron');
 const net = electron.net;
 const spawn = require("child_process").spawn;
+const fs = require('fs');
+import { XMLParser } from 'fast-xml-parser';
 
 // HACK: find the tray with some sort of channeling or singaling instead
 let tray:Tray = null;
 let window:BrowserWindow = null;
+let apiKey:string = null;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -40,6 +43,13 @@ const createWindow = () => {
   mainWindow.on('show', onWindowShow);
   mainWindow.on('hide', onWindowHide);
 
+  // 'did-finish-load' is the only trustworthy event we can use to identify 
+  // when the render process is ready to receive IPC messages:
+  mainWindow.webContents.on('did-finish-load', () => {
+    console.log("### Main Window finished loading. Setting API key...");
+    mainWindow.webContents.send('set-api-key', apiKey);
+  });
+
   window = mainWindow;
 };
 
@@ -63,9 +73,9 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
-  // Send the API KEY
-  console.log(`send: set-api-key to ${process.env.SYNCTHING_API_KEY}`);
-  findWindow().webContents.send('set-api-key', process.env.SYNCTHING_API_KEY);
+  // // HACK: Send the API KEY
+  // console.log(`send: set-api-key to ${process.env.SYNCTHING_API_KEY}`);
+  // findWindow().webContents.send('set-api-key', process.env.SYNCTHING_API_KEY);
 });
 
 app.on('child-process-gone', (event, details) => {
@@ -113,7 +123,7 @@ const checkHealth = (): void => {
   })
   request.on('error', (error:Error) => {
     console.log("Syncthing not running...trying to start Syncthing...");
-    spawn("syncthing", ["serve"]);
+    spawn("syncthing", ["serve", "--no-browser"]);
   })
   request.setHeader('Content-Type', 'application/json');
   request.end();
@@ -151,6 +161,42 @@ const onClickHide = (menuItem:MenuItem, window:BaseWindow, e:KeyboardEvent): voi
   findWindow().hide();
 };
 
+const getConfigXml = (path:string): string => {
+  if (fs.existsSync(path)) {
+    return fs.readFileSync(path);
+  }
+  return null;
+};
+
+const getApiKey = (): string => {
+  const winPath = path.join(process.env.LOCALAPPDATA || "", "Syncthing", "config.xml");
+  const macPath = path.join(process.env.HOME || "", "Library/Application Support/Syncthing/config.xml");
+  const xdgPath = path.join(process.env.XDG_STATE_HOME || "", "syncthing/config.xml");
+  const locPath = path.join(process.env.HOME || "", ".local/state/syncthing/config.xml");
+  let xml = null;
+  for (var p of [winPath, macPath, xdgPath, locPath]) {
+    console.log(`Trying config.xml from ${p}...`);
+    xml = getConfigXml(p);
+    if (xml != null) {
+      console.log("Success!");
+      break;
+    }
+    console.log("...no luck.");
+  }  
+
+  if (xml != null) {
+    const parser = new XMLParser();
+    const json = parser.parse(xml);
+    return json.configuration.gui.apikey;
+  } else if(process.env.SYNCTHING_API_KEY != null) {
+    console.log("No API key found in config.xml -- falling back to SYNCTHING_API_KEY...");
+    return process.env.SYNCTHING_API_KEY;
+  } else {
+    console.error("API not found in config.xml or SYNCTHING_API_KEY env var! Exiting.");
+    process.exit(1);
+  }
+};
+
 app.whenReady().then(() => {
   console.log("setting tray icon...");
   tray = new Tray(nativeImage.createFromDataURL(appIcon));
@@ -164,10 +210,15 @@ app.whenReady().then(() => {
 
   console.log("Checking health...");
   checkHealth();
+
+  console.log("Finding API key from configuration...");
+  apiKey = getApiKey();
+  console.log("API Key:");
+  console.log(apiKey);
   
   // checkNeighbours();
 
   // Send the API KEY
   console.log("send: set-api-key");
-  findWindow().webContents.send('set-api-key', process.env.SYNCTHING_API_KEY);
+  findWindow().webContents.send('set-api-key', apiKey);
 });

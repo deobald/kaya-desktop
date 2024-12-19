@@ -12,6 +12,7 @@ const devices = ref(null);
 const events = ref(null);
 
 const headersWithKey = (): {} => {
+  // TODO: obviously don't pass data arond in the UI ...rrriiiiiiight?
   const apiKey = document.getElementById('api-key').innerHTML;
   console.log(`api key in innerHtml: ${apiKey}`);
   return {
