@@ -5,7 +5,7 @@
 * [-] if syncthing isn't running, try to start it
     * [x] attempt to start
     * [ ] check if it's running again
-    * [ ] check service on a loop
+    * [ ] check service on a loop - use `child-process-gone`?
 * [ ] if syncthing is running, steal the API key, yo
     * [x] from `SYNCTHING_API_KEY`
     * [ ] from Syncthing itself (via Electron)

@@ -68,9 +68,11 @@ app.on('activate', () => {
   findWindow().webContents.send('set-api-key', process.env.SYNCTHING_API_KEY);
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
-
+app.on('child-process-gone', (event, details) => {
+  console.log("#### child process gone:");
+  console.log(details.serviceName);
+  console.log("####");
+});
 
 // HACK: Nasty way of finding our window; Signal's SettingsChannel method is preferable
 //       We can't use 'window' because it becomes null when hidden.
