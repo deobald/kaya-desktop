@@ -10,6 +10,9 @@ import { FuseV1Options, FuseVersion } from '@electron/fuses';
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
+    // note sure if this is necessary or useful (since we get images as Base64), 
+    // but I'm leaving it here anyway. -sd
+    extraResource: ['./electron/assets/fire.png']
   },
   rebuildConfig: {},
   makers: [new MakerSquirrel({}), new MakerZIP({}, ['darwin']), new MakerRpm({}), new MakerDeb({})],

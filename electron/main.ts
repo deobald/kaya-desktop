@@ -1,6 +1,7 @@
-import { app, BaseWindow, BrowserWindow, IncomingMessage, Menu, MenuItem, Tray, ipcMain } from 'electron';
+import { app, BaseWindow, BrowserWindow, IncomingMessage, Menu, MenuItem, Tray, nativeImage, ipcMain } from 'electron';
 import path from 'path';
 import started from 'electron-squirrel-startup';
+import appIcon from './assets/fire_32px.png';
 
 const electron = require('electron');
 const net = electron.net;
@@ -149,8 +150,8 @@ const onClickHide = (menuItem:MenuItem, window:BaseWindow, e:KeyboardEvent): voi
 };
 
 app.whenReady().then(() => {
-  console.log("setting tray icon");
-  tray = new Tray('/home/steven/work/deobald/kaya-desktop/fire.png');
+  console.log("setting tray icon...");
+  tray = new Tray(nativeImage.createFromDataURL(appIcon));
   tray.setToolTip('Kaya');
 
   if (findWindow().isVisible()) {
