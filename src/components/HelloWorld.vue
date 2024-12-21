@@ -14,7 +14,6 @@ const events = ref(null);
 const headersWithKey = (): {} => {
   // TODO: obviously don't pass data arond in the UI ...rrriiiiiiight?
   const apiKey = document.getElementById('api-key').innerHTML;
-  console.log(`api key in innerHtml: ${apiKey}`);
   return {
     'Authorization': `Bearer ${apiKey}`,
     'Content-Type': 'application/json'
@@ -44,14 +43,14 @@ const checkDevices = (): void => {
 };
 
 const checkEvents = (): void => {
-  const path = '/rest/events?events=DeviceConnected,DeviceDiscovered';
+  const path = '/rest/events?events=DeviceDiscovered'; // DeviceConnected,
   fetch(`http://localhost:8384${path}`, request())
     .then(response => response.json())
-    .then(data => devices.value = data);
+    .then(data => events.value = data);
 };
 
 const pairWith = (deviceID:string): void => {
-  const newDevice = createDevice(deviceID, "ziggo");
+  const newDevice = createDevice(deviceID);
 
   const path = `/rest/config/devices`; // /${deviceID}
   fetch(`http://localhost:8384${path}`, { 

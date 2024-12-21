@@ -1,11 +1,12 @@
 
 // const createDevice = (deviceId:string, name:string): {} => {
-export function createDevice(deviceID:string, name:string) {
+export function createDevice(deviceID:string) {
   const allowedNetworks: string[] = [];
   const ignoredFolders: string[] = [];
   return { 
     "deviceID": deviceID,
-    // "name": name,
+    // "name": name, // we intentionally do not pass name so Syncthing uses device names correctly
+                     // see: https://forum.syncthing.net/t/rest-api-get-device-name-for-devices-connected-via-api/23480/2?u=deobald
     "addresses": [ "dynamic" ], 
     "compression": "metadata", 
     "certName": "", 

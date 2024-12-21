@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import DeviceTimer from './components/DeviceTimer.vue';
 import HelloWorld from './components/HelloWorld.vue'
 </script>
 
@@ -7,6 +8,8 @@ import HelloWorld from './components/HelloWorld.vue'
     <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
 
     <div class="wrapper">
+      <DeviceTimer />
+      <hr/>
       <HelloWorld msg="You did it!" />
     </div>
   </header>
@@ -19,6 +22,10 @@ import HelloWorld from './components/HelloWorld.vue'
 <style scoped>
 header {
   line-height: 1.5;
+}
+
+hr {
+  margin: 3rem;
 }
 
 .logo {
