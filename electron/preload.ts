@@ -3,7 +3,8 @@
 
 const { contextBridge, ipcRenderer } = require('electron')
 
-console.log("exposing onSetApiKey");
+console.log("Exposing Main <=> Renderer IPC (onSetApiKey, startSyncthing)");
 contextBridge.exposeInMainWorld('electronAPI', {
-  onSetApiKey: (callback:any) => ipcRenderer.on('set-api-key', (_event, value) => callback(value))
+  onSetApiKey: (callback:any) => ipcRenderer.on('set-api-key', (_event, value) => callback(value)),
+  startSyncthing: (msg:any) => ipcRenderer.send('start-syncthing', msg)
 })

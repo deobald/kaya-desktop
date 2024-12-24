@@ -7,6 +7,9 @@ import { createDevice } from '../devices';
 const headersWithKey = (): {} => {
   // TODO: obviously don't pass data arond in the UI ...rrriiiiiiight?
   const apiKey = document.getElementById('api-key').innerHTML;
+  if (apiKey === "") {
+    throw Error("API key not set.");
+  }
   return {
     'Authorization': `Bearer ${apiKey}`,
     'Content-Type': 'application/json'
@@ -46,8 +49,16 @@ const pairWith = (deviceID:string): void => {
 };
 
 const fetchData = (): void => {
+  let req = {};
+  try { 
+    req = request();
+  } catch (error) {
+    console.log("API Key not set. Not fetching events yet.");
+    return;
+  }
+  
   const path = '/rest/events?events=DeviceDiscovered'; // DeviceConnected,
-  fetch(`http://localhost:8384${path}`, request())
+  fetch(`http://localhost:8384${path}`, req)
     .then(response => response.json())
     .then(data => {
       events.value = data.map((e:any) => e.id);
@@ -57,7 +68,7 @@ const fetchData = (): void => {
 
 onMounted(() => {
   fetchData();
-  events.pollInterval = setInterval(fetchData, 1000);
+  events.pollInterval = setInterval(fetchData, 5000);
 });
 
 </script>

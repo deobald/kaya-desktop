@@ -3,8 +3,8 @@ import path from 'path';
 import started from 'electron-squirrel-startup';
 import appIcon from './assets/fire_32px.png';
 
-const electron = require('electron');
-const net = electron.net;
+// const electron = require('electron');
+// const net = electron.net;
 const spawn = require("child_process").spawn;
 const fs = require('fs');
 import { XMLParser } from 'fast-xml-parser';
@@ -26,7 +26,7 @@ const createWindow = () => {
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      webSecurity: false // Disable CORS security (TODO: probably solve this with a proxy or something nicer?)
+      webSecurity: false, // Disable CORS security (TODO: probably solve this with a proxy or something nicer?)
     },
   });
 
@@ -37,7 +37,6 @@ const createWindow = () => {
     mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
   }
 
-  // Open the DevTools.
   mainWindow.webContents.openDevTools();
 
   mainWindow.on('show', onWindowShow);
@@ -48,6 +47,11 @@ const createWindow = () => {
   mainWindow.webContents.on('did-finish-load', () => {
     console.log("### Main Window finished loading. Setting API key...");
     mainWindow.webContents.send('set-api-key', apiKey);
+  });
+
+  ipcMain.on('start-syncthing', (event, msg) => {
+    console.log("### Main received call to startSyncthing()");
+    startSyncthing();
   });
 
   window = mainWindow;
@@ -73,9 +77,6 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
-  // // HACK: Send the API KEY
-  // console.log(`send: set-api-key to ${process.env.SYNCTHING_API_KEY}`);
-  // findWindow().webContents.send('set-api-key', process.env.SYNCTHING_API_KEY);
 });
 
 app.on('child-process-gone', (event, details) => {
@@ -110,42 +111,6 @@ const onWindowHide = (): void => {
   tray.setContextMenu(contextMenu);
 };
 
-const checkHealth = (): void => {
-  const request = net.request({
-    method: 'GET',
-    protocol: 'http:',
-    hostname: '127.0.0.1',
-    port: 8384,
-    path: '/rest/noauth/health'
-  });
-  request.on('response', (response:IncomingMessage) => {
-    console.log(`STATUS: ${response.statusCode}`);
-  })
-  request.on('error', (error:Error) => {
-    console.log("Syncthing not running...trying to start Syncthing...");
-    spawn("syncthing", ["serve", "--no-browser"]);
-  })
-  request.setHeader('Content-Type', 'application/json');
-  request.end();
-};
-
-const checkNeighbours = (): void => {
-  const request = net.request({
-    method: 'GET',
-    protocol: 'http:',
-    hostname: '127.0.0.1',
-    port: 8384,
-    path: '/rest/system/discovery'
-  });
-  request.on('response', (response:IncomingMessage) => {
-    console.log(`STATUS: ${response.statusCode}`);
-    response.on('data', (chunk) => { console.log(chunk.toString()); });
-  });
-  request.setHeader('Content-Type', 'application/json');
-  request.setHeader('Authorization', `Bearer ${process.env.SYNCTHING_API_KEY}`);
-  request.end();
-};
-
 const onClickQuit = (menuItem:MenuItem, window:BaseWindow, e:KeyboardEvent): void => {
   app.quit();
 };
@@ -167,6 +132,10 @@ const getConfigXml = (path:string): string => {
   }
   return null;
 };
+
+const startSyncthing = (): void => {
+  spawn("syncthing", ["serve", "--no-browser"]);
+}
 
 const getApiKey = (): string => {
   const winPath = path.join(process.env.LOCALAPPDATA || "", "Syncthing", "config.xml");
@@ -208,17 +177,11 @@ app.whenReady().then(() => {
     onWindowHide();
   }
 
-  console.log("Checking health...");
-  checkHealth();
-
   console.log("Finding API key from configuration...");
   apiKey = getApiKey();
   console.log("API Key:");
   console.log(apiKey);
-  
-  // checkNeighbours();
-
-  // Send the API KEY
   console.log("send: set-api-key");
   findWindow().webContents.send('set-api-key', apiKey);
 });
+

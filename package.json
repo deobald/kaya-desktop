@@ -46,6 +46,7 @@
     "electron-squirrel-startup": "^1.0.1",
     "fast-xml-parser": "^4.5.1",
     "jsdom": "^25.0.1",
+    "npm": "^11.0.0",
     "vue": "^3.5.13"
   }
 }
