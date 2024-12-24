@@ -1,7 +1,7 @@
 import { app, BaseWindow, BrowserWindow, IncomingMessage, Menu, MenuItem, Tray, nativeImage, ipcMain } from 'electron';
 import path from 'path';
 import started from 'electron-squirrel-startup';
-import appIcon from './assets/fire_32px.png';
+import appIcon from './assets/kaya-wood-log-cube_32px.png';
 
 // const electron = require('electron');
 // const net = electron.net;

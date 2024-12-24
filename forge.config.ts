@@ -12,7 +12,11 @@ const config: ForgeConfig = {
     asar: true,
     // note sure if this is necessary or useful (since we get images as Base64), 
     // but I'm leaving it here anyway. -sd
-    extraResource: ['./electron/assets/fire.png']
+    extraResource: ['./electron/assets/fire.png', 
+                    './electron/assets/fire_32px.png',
+                    './electron/assets/kaya-wood-log-cube.png',
+                    './electron/assets/kaya-wood-log-cube_32px.png',
+    ]
   },
   rebuildConfig: {},
   makers: [new MakerSquirrel({}), new MakerZIP({}, ['darwin']), new MakerRpm({}), new MakerDeb({})],
