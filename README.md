@@ -4,11 +4,12 @@
 
 * [ ] cleanup
     * [ ] disabling webSecurity is probably bad ... proxy instead
-    * [ ] to frontend without sticking it in the UI
-* [-] syncthing serve
+    * [ ] api key to frontend without sticking it in the UI
+* [x] syncthing serve
     * [x] attempt to start
-    * [ ] check if it's running again
-    * [ ] check service on a loop - use `child-process-gone`?
+    * [x] check if it's running again
+    * [x] check service on a loop - use `child-process-gone`?
+    * [x] as icon
 * [x] api key
     * [x] from `SYNCTHING_API_KEY`
     * [x] from Syncthing itself (via Electron)

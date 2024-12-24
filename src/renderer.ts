@@ -9,4 +9,14 @@ window.electronAPI.onSetApiKey((value:string) => {
   apiKey.innerText = value;
 })
 
-createApp(App).mount('#app')
+// FontAwesome nonsense
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons'
+import { faGlobe, faCirclePlay, faSpinner } from '@fortawesome/free-solid-svg-icons'
+// import {  } from '@fortawesome/free-brands-svg-icons' // we'll want these eventually, I'm sure.
+library.add(faCircleQuestion, faGlobe, faCirclePlay, faSpinner);
+
+createApp(App)
+  .component('font-awesome-icon', FontAwesomeIcon)
+  .mount('#app')
