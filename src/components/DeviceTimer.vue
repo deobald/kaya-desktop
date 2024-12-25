@@ -84,6 +84,7 @@ const fetchDiscovery = (): void => {
   }
   
   const path = '/rest/events?events=DeviceDiscovered'; // DeviceConnected,
+  // net::ERR_INSUFFICIENT_RESOURCES
   fetch(`http://localhost:8384${path}`, req)
     .then(response => response.json())
     .then(data => {

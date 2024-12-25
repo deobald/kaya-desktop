@@ -42,6 +42,9 @@ const renderIcon = (status:string): void => {
 }
 
 const checkHealth = async (): Promise<void> => {
+  // GET http://localhost:8384/rest/noauth/health net::ERR_INSUFFICIENT_RESOURCES
+  // checkHealth @ SyncthingServiceTimer.vue:45
+
   fetch('http://localhost:8384/rest/noauth/health')
   .then(response => {
     if (response.ok) {
