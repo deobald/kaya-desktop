@@ -40,16 +40,12 @@ const events = reactive({
 });
 
 const askWhoami = (): void => {
-  const path = `/rest/system/connections`;
+  const path = `/rest/noauth/health`;
   fetch(`http://localhost:8384${path}`, { 
     method: 'GET',
     headers: headersWithKey(),
   })
-  .then(response => response.json())
-  .then(json => {
-    console.log(json);
-    whoami.value = Object.keys(json.connections);
-  }); // .map((d:any) => d.deviceID)
+  .then(response => whoami.value = response.headers.get('x-syncthing-id'));
   if (whoami.value != null) {
     clearInterval(whoami.pollInterval);
   }
