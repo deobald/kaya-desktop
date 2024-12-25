@@ -42,20 +42,25 @@ const renderIcon = (status:string): void => {
 }
 
 const checkHealth = async (): Promise<void> => {
-  try {
-    const response = await fetch('http://localhost:8384/rest/noauth/health');
+  fetch('http://localhost:8384/rest/noauth/health')
+  .then(response => {
     if (response.ok) {
       health.serviceStatus = Status.OK;
       renderIcon(health.serviceStatus);
     } else {
       console.log("Health status not ok");
     }
-  } catch (error) {
-    health.serviceStatus = Status.STARTING;
-    renderIcon(health.serviceStatus);
-    console.log("Syncthing not running...trying to start Syncthing...");
-    window.electronAPI.startSyncthing(null);
-  }
+  })
+  .catch(error => {
+    if (error instanceof TypeError && error.message === "Failed to fetch") {
+      health.serviceStatus = Status.STARTING;
+      renderIcon(health.serviceStatus);
+      console.log("Syncthing not running...trying to start Syncthing...");
+      window.electronAPI.startSyncthing(null);
+    } else {
+      console.dir(error);
+    }
+  });
 };
 
 onMounted(() => {

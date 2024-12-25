@@ -5,6 +5,7 @@
 * [ ] cleanup
     * [ ] disabling webSecurity is probably bad ... proxy instead
     * [ ] api key to frontend without sticking it in the UI
+    * [-] fix memory leak in SyncthingServiceTimer @ `fetch('.../health');`
 * [x] syncthing serve
     * [x] attempt to start
     * [x] check if it's running again
