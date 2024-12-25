@@ -3,6 +3,12 @@ import { onMounted } from 'vue';
 import { reactive, computed } from 'vue'
 import { ref } from 'vue';
 import { createDevice } from '../devices';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+const logos = [
+  'fa-jedi-order', 'fa-galactic-senate', 'fa-galactic-republic', 'fa-fulcrum', 'fa-first-order',
+  'fa-connectdevelop', 'fa-canadian-maple-leaf', 'fa-diaspora'
+]
 
 const headersWithKey = (): {} => {
   // TODO: obviously don't pass data arond in the UI ...rrriiiiiiight?
@@ -24,10 +30,30 @@ const request = (): {} => {
 
 const neighbours = ref(null);
 const pairedDevices = ref([]);
+const whoami = reactive({
+  value: null,
+  pollInterval: null
+})
 const events = reactive({
   value: null,
   pollInterval: null
 });
+
+const askWhoami = (): void => {
+  const path = `/rest/system/connections`;
+  fetch(`http://localhost:8384${path}`, { 
+    method: 'GET',
+    headers: headersWithKey(),
+  })
+  .then(response => response.json())
+  .then(json => {
+    console.log(json);
+    whoami.value = Object.keys(json.connections);
+  }); // .map((d:any) => d.deviceID)
+  if (whoami.value != null) {
+    clearInterval(whoami.pollInterval);
+  }
+};
 
 const checkNeighbours = (): void => {
   const path = '/rest/system/discovery';
@@ -48,7 +74,7 @@ const pairWith = (deviceID:string): void => {
   .then(_ => pairedDevices.value.push(deviceID));
 };
 
-const fetchData = (): void => {
+const fetchDiscovery = (): void => {
   let req = {};
   try { 
     req = request();
@@ -67,14 +93,17 @@ const fetchData = (): void => {
 };
 
 onMounted(() => {
-  fetchData();
-  events.pollInterval = setInterval(fetchData, 5000);
+  whoami.pollInterval = setInterval(askWhoami, 1000);
+  events.pollInterval = setInterval(fetchDiscovery, 5000);
 });
 
 </script>
 
 <template>
   <div>
+    <label>Who am I?</label>
+    <p>{{ whoami.value }}</p>
+
     <div v-for="neighbour in neighbours">
       <button @click="pairWith(neighbour)">{{ neighbour }}</button>
     </div>

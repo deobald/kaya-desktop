@@ -26,6 +26,18 @@ const request = (): {} => {
   }
 }
 
+const checkConnections = (): void => {
+  const path = `/rest/system/connections`;
+  fetch(`http://localhost:8384${path}`, { 
+    method: 'GET',
+    headers: headersWithKey(),
+  })
+  .then(response => response.json())
+  .then(json => {
+    console.log(json);
+  });
+};
+
 const checkNeighbours2 = (): void => {
   // const path = '/rest/system/connections'; // connected devices and this device (as not connected), but only when there is another device connected...?
   const path = '/rest/system/discovery'; // contains "nearby devices"! <3
@@ -83,22 +95,32 @@ const createFolder = (): void => {
 
 <template>
   <div class="greetings">
-    <button @click="createFolder()">Create Folder</button>
-    <button @click="checkNeighbours2()">Check Neighbours</button>
-    <button @click="checkDevices()">Check Devices</button>
-    <button @click="checkEvents()">Check Events</button>
-    <div v-for="neighbour in neighbours">
-      <button @click="pairWith(neighbour)">{{ neighbour }}</button>
+    <div>
+      <button @click="checkConnections()">Check Connections</button>
     </div>
-    <label>Neighbours:</label>
-    <p>{{ neighbours }}</p>
-    <label>Last Device Paired:</label>
-    <p>{{ lastPair }}</p>
-    <label>Devices:</label>
-    <p>{{ devices }}</p>
-    <label>Events:</label>
-    <p>{{ events }}</p>
-
+    <div>
+      <button @click="checkNeighbours2()">Check Neighbours</button>
+      <label>Neighbours:</label>
+      <p>{{ neighbours }}</p>
+      <label>Last Device Paired:</label>
+      <p>{{ lastPair }}</p>
+      <label>Click to pair:</label>
+      <div v-for="neighbour in neighbours">
+        <button @click="pairWith(neighbour)">{{ neighbour }}</button>
+      </div>
+    </div>
+    <div>
+      <button @click="checkDevices()">Check Devices</button>
+      <label>Devices:</label>
+      <p>{{ devices }}</p>
+    </div>
+    <div>
+      <button @click="checkEvents()">Check Events</button>
+      <label>Events:</label>
+      <p>{{ events }}</p>
+    </div>
+    <button @click="createFolder()">Create Folder</button>
+    
     <!-- <h1 class="green">{{ msg }}</h1> -->
     
   </div>
