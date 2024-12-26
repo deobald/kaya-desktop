@@ -16,7 +16,9 @@ import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons'
 import { faGlobe, faCirclePlay, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { faJediOrder, faGalacticSenate, faGalacticRepublic, faFulcrum, faFirstOrder, 
          faConnectdevelop, faCanadianMapleLeaf, faDiaspora } from '@fortawesome/free-brands-svg-icons'
-library.add(faCircleQuestion, faGlobe, faCirclePlay, faSpinner);
+library.add(faCircleQuestion, faGlobe, faCirclePlay, faSpinner, 
+  faJediOrder, faGalacticSenate, faGalacticRepublic, faFulcrum, faFirstOrder, 
+  faConnectdevelop, faCanadianMapleLeaf, faDiaspora);
 
 createApp(App)
   .component('font-awesome-icon', FontAwesomeIcon)

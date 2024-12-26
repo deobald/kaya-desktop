@@ -7,6 +7,7 @@
     * [ ] api key to frontend without sticking it in the UI
     * [-] fix memory leak in SyncthingServiceTimer @ `fetch('.../health');`
                           and DeviceTimer @ `fetch'...?events=DeviceDiscovered');`
+    * [ ] device = tux/win/mac + name + emoji
 * [x] syncthing serve
     * [x] attempt to start
     * [x] check if it's running again
@@ -17,6 +18,7 @@
     * [x] from Syncthing itself (via Electron)
 * [-] nearby devices
     * [x] as text, with button
+    * [x] self as emoji
     * [ ] as emoji
     * [ ] announce new device discovered (polling or events)
 * [ ] add device

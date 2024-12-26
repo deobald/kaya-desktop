@@ -1,6 +1,11 @@
 
+const logos = [
+  'fa-jedi-order', 'fa-galactic-senate', 'fa-galactic-republic', 'fa-fulcrum', 'fa-first-order',
+  'fa-connectdevelop', 'fa-canadian-maple-leaf', 'fa-diaspora'
+]
+
 // const createDevice = (deviceId:string, name:string): {} => {
-export function createDevice(deviceID:string) {
+export const createStDevice = (deviceID:string): {} => {
   const allowedNetworks: string[] = [];
   const ignoredFolders: string[] = [];
   return { 
@@ -25,3 +30,20 @@ export function createDevice(deviceID:string) {
     "numConnections": 0 };
 }
 
+export const createDeviceLogo = (deviceID:string): {} => {
+  const index = Math.abs(sdbm(deviceID)) % logos.length;
+  return logos[index];
+}
+
+const sdbm = (str:string) => {
+  let arr = str.split('');
+  return arr.reduce(
+    (hashCode:number, currentVal:string) =>
+      (hashCode =
+        currentVal.charCodeAt(0) +
+        (hashCode << 6) +
+        (hashCode << 16) -
+        hashCode),
+    0
+  );
+};

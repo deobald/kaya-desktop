@@ -4,7 +4,7 @@ defineProps<{
 }>()
 
 import { ref } from 'vue';
-import { createDevice } from '../devices';
+import { createStDevice } from '../devices';
 
 const neighbours = ref(null);
 const lastPair = ref(null);
@@ -62,7 +62,7 @@ const checkEvents = (): void => {
 };
 
 const pairWith = (deviceID:string): void => {
-  const newDevice = createDevice(deviceID);
+  const newDevice = createStDevice(deviceID);
 
   const path = `/rest/config/devices`; // /${deviceID}
   fetch(`http://localhost:8384${path}`, { 

@@ -2,13 +2,8 @@
 import { onMounted } from 'vue';
 import { reactive, computed } from 'vue'
 import { ref } from 'vue';
-import { createDevice } from '../devices';
+import { createStDevice, createDeviceLogo } from '../devices';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-
-const logos = [
-  'fa-jedi-order', 'fa-galactic-senate', 'fa-galactic-republic', 'fa-fulcrum', 'fa-first-order',
-  'fa-connectdevelop', 'fa-canadian-maple-leaf', 'fa-diaspora'
-]
 
 const headersWithKey = (): {} => {
   // TODO: obviously don't pass data arond in the UI ...rrriiiiiiight?
@@ -32,6 +27,7 @@ const neighbours = ref(null);
 const pairedDevices = ref([]);
 const whoami = reactive({
   value: null,
+  color: 'yellow',
   pollInterval: null
 })
 const events = reactive({
@@ -45,7 +41,7 @@ const askWhoami = (): void => {
     method: 'GET',
     headers: headersWithKey(),
   })
-  .then(response => whoami.value = response.headers.get('x-syncthing-id'));
+  .then(response => whoami.value = createDeviceLogo(response.headers.get('x-syncthing-id')));
   if (whoami.value != null) {
     clearInterval(whoami.pollInterval);
   }
@@ -59,7 +55,7 @@ const checkNeighbours = (): void => {
 };
 
 const pairWith = (deviceID:string): void => {
-  const newDevice = createDevice(deviceID);
+  const newDevice = createStDevice(deviceID);
 
   const path = `/rest/config/devices`;
   fetch(`http://localhost:8384${path}`, { 
@@ -98,8 +94,10 @@ onMounted(() => {
 
 <template>
   <div>
-    <label>Who am I?</label>
-    <p>{{ whoami.value }}</p>
+    <div>
+      <label>Who am I?</label>
+      <font-awesome-icon :class="whoami.color" :icon="['fa-brands', whoami.value]" size="3x" fixed-width />
+    </div>
 
     <div v-for="neighbour in neighbours">
       <button @click="pairWith(neighbour)">{{ neighbour }}</button>
