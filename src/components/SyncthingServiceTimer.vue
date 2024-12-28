@@ -75,6 +75,7 @@ onMounted(() => {
 
 <template>
   <div>
+    <label>Syncthing Status:</label>
     <font-awesome-icon :class="sysColor" :spin-pulse="sysThrobber" :icon="[sysStyle, sysStatus]" size="3x" fixed-width />
   </div>
 </template>

@@ -23,14 +23,14 @@ const request = (): {} => {
   }
 }
 
-const neighbours = ref(null);
-const pairedDevices = ref([]);
 const whoami = reactive({
   style: 'fa-regular',
   value: 'fa-circle-question',
   color: '#df4655',
   pollInterval: null
 })
+const neighbours = ref([])
+const pairedDevices = ref([]);
 const events = reactive({
   value: null,
   pollInterval: null
@@ -56,7 +56,25 @@ const checkNeighbours = (): void => {
   const path = '/rest/system/discovery';
   fetch(`http://localhost:8384${path}`, request())
     .then(response => response.json())
-    .then(data => neighbours.value = Object.keys(data));
+    .then(data => {
+      if (data == null) {
+        neighbours.value = [{
+          style: 'fa-regular',
+          value: 'fa-circle-question',
+          color: '#df4655',
+        }];
+        return;
+      }
+      neighbours.value = [];
+      Object.keys(data).forEach((id) => {
+        neighbours.value.push({
+          style: 'fa-brands',
+          value: createDeviceLogo(id),
+          color: createDeviceColor(id),
+        });
+      })
+      // neighbours.value = Object.keys(data)
+    });
 };
 
 const pairWith = (deviceID:string): void => {
@@ -104,9 +122,17 @@ onMounted(() => {
       <font-awesome-icon :style="{color: whoami.color}" :icon="[whoami.style, whoami.value]" size="3x" fixed-width />
     </div>
 
-    <div v-for="neighbour in neighbours">
-      <button @click="pairWith(neighbour)">{{ neighbour }}</button>
+    <div>
+      <label>Nearby Devices:</label>
+      <div v-for="neighbour in neighbours">
+        <button @click="pairWith(neighbour)">
+          <font-awesome-icon :style="{color: neighbour.color}" :icon="[neighbour.style, neighbour.value]" size="3x" fixed-width />
+      </button>
+      </div>
     </div>
+
+    <hr />
+
     <label>Paired Devices:</label>
     <p>{{ pairedDevices }}</p>
     <label>Events:</label>
