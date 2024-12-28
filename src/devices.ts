@@ -30,9 +30,14 @@ export const createStDevice = (deviceID:string): {} => {
     "numConnections": 0 };
 }
 
-export const createDeviceLogo = (deviceID:string): {} => {
+export const createDeviceLogo = (deviceID:string): string => {
   const index = Math.abs(sdbm(deviceID)) % logos.length;
   return logos[index];
+}
+
+export const createDeviceColor = (deviceID:string): string => {
+  const colorInt = Math.abs(sdbm(deviceID)) % 16777215;
+  return "#" + (colorInt & 0x00FFFFFF).toString(16).padStart(6, '0');;
 }
 
 const sdbm = (str:string) => {

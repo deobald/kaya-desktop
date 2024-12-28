@@ -2,7 +2,7 @@
 import { onMounted } from 'vue';
 import { reactive, computed } from 'vue'
 import { ref } from 'vue';
-import { createStDevice, createDeviceLogo } from '../devices';
+import { createStDevice, createDeviceLogo, createDeviceColor } from '../devices';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 const headersWithKey = (): {} => {
@@ -26,8 +26,9 @@ const request = (): {} => {
 const neighbours = ref(null);
 const pairedDevices = ref([]);
 const whoami = reactive({
-  value: null,
-  color: 'yellow',
+  style: 'fa-regular',
+  value: 'fa-circle-question',
+  color: '#df4655',
   pollInterval: null
 })
 const events = reactive({
@@ -41,7 +42,11 @@ const askWhoami = (): void => {
     method: 'GET',
     headers: headersWithKey(),
   })
-  .then(response => whoami.value = createDeviceLogo(response.headers.get('x-syncthing-id')));
+  .then(response => {
+    whoami.value = createDeviceLogo(response.headers.get('x-syncthing-id'));
+    whoami.style = 'fa-brands';
+    whoami.color = createDeviceColor(response.headers.get('x-syncthing-id'));
+  });
   if (whoami.value != null) {
     clearInterval(whoami.pollInterval);
   }
@@ -96,7 +101,7 @@ onMounted(() => {
   <div>
     <div>
       <label>Who am I?</label>
-      <font-awesome-icon :class="whoami.color" :icon="['fa-brands', whoami.value]" size="3x" fixed-width />
+      <font-awesome-icon :style="{color: whoami.color}" :icon="[whoami.style, whoami.value]" size="3x" fixed-width />
     </div>
 
     <div v-for="neighbour in neighbours">
@@ -108,3 +113,18 @@ onMounted(() => {
     <p>{{ events }}</p>
   </div>
 </template>
+
+
+<style scoped>
+.ok {
+  color: #20abd7;
+}
+
+.bad {
+  color: #df4655;
+}
+
+.unknown {
+  color: #e8e8d5;
+}
+</style>

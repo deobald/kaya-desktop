@@ -32,3 +32,18 @@
 * [ ] sync
     * [ ] add folder to config - on device add?
 
+## Bugs
+
+Complete failure (app is just white after leaving it running for a while):
+
+```
+...
+[272225:1226/163112.895691:ERROR:cmd_buffer_helper.cc(141)] ContextResult::kFatalFailure: CommandBufferHelper::AllocateRingBuffer() failed
+[272225:1226/163112.906880:ERROR:cmd_buffer_helper.cc(141)] ContextResult::kFatalFailure: CommandBufferHelper::AllocateRingBuffer() failed
+[272225:1226/163112.917767:ERROR:cmd_buffer_helper.cc(141)] ContextResult::kFatalFailure: CommandBufferHelper::AllocateRingBuffer() failed
+[272225:1226/163112.928896:ERROR:cmd_buffer_helper.cc(141)] ContextResult::kFatalFailure: CommandBufferHelper::AllocateRingBuffer() failed
+[272225:1226/163112.940118:ERROR:cmd_buffer_helper.cc(141)] ContextResult::kFatalFailure: CommandBufferHelper::AllocateRingBuffer() failed
+[272225:1226/163112.951413:ERROR:cmd_buffer_helper.cc(141)] ContextResult::kFatalFailure: CommandBufferHelper::AllocateRingBuffer() failed
+[272225:1226/163112.962787:ERROR:cmd_buffer_helper.cc(141)] ContextResult::kFatalFailure: CommandBufferHelper::AllocateRingBuffer() failed
+[272225:1226/163112.981398:ERROR:shared_image_interface_proxy.cc(178)] CreateSharedImage: Could not get SHM for data upload.
+```
