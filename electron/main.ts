@@ -3,8 +3,6 @@ import path from 'path';
 import started from 'electron-squirrel-startup';
 import appIcon from './assets/kaya-wood-log-cube_32px.png';
 
-// const electron = require('electron');
-// const net = electron.net;
 const spawn = require("child_process").spawn;
 const fs = require('fs');
 import { XMLParser } from 'fast-xml-parser';
@@ -134,7 +132,7 @@ const getConfigXml = (path:string): string => {
 };
 
 const startSyncthing = (): void => {
-  spawn("syncthing", ["serve", "--no-browser"]);
+  spawn("syncthing", ["serve", "--no-browser", "--logfile", path.join(app.getPath('home'), ".kaya-syncthing.log")]);
 }
 
 const getApiKey = (): string => {

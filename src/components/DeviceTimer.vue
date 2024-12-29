@@ -59,6 +59,7 @@ const checkNeighbours = (): void => {
     .then(data => {
       if (data == null) {
         neighbours.value = [{
+          deviceID: null,
           style: 'fa-regular',
           value: 'fa-circle-question',
           color: '#df4655',
@@ -68,12 +69,12 @@ const checkNeighbours = (): void => {
       neighbours.value = [];
       Object.keys(data).forEach((id) => {
         neighbours.value.push({
+          deviceID: id,
           style: 'fa-brands',
           value: createDeviceLogo(id),
           color: createDeviceColor(id),
         });
       })
-      // neighbours.value = Object.keys(data)
     });
 };
 
@@ -86,7 +87,15 @@ const pairWith = (deviceID:string): void => {
     headers: headersWithKey(),
     body: JSON.stringify(newDevice)
   })
-  .then(_ => pairedDevices.value.push(deviceID));
+  .then(response => {
+    if (response.ok) {
+      pairedDevices.value.push(deviceID);
+    } else {
+      console.log("### Request failed with:");
+      response.text().then(text => console.log(text));
+    }
+  })
+  .catch(error => console.dir(error));
 };
 
 const fetchDiscovery = (): void => {
@@ -125,7 +134,7 @@ onMounted(() => {
     <div>
       <label>Nearby Devices:</label>
       <div v-for="neighbour in neighbours">
-        <button @click="pairWith(neighbour)">
+        <button @click="pairWith(neighbour.deviceID)">
           <font-awesome-icon :style="{color: neighbour.color}" :icon="[neighbour.style, neighbour.value]" size="3x" fixed-width />
       </button>
       </div>
