@@ -135,7 +135,11 @@ const getConfigXml = (path:string): string => {
 };
 
 const startSyncthing = (): void => {
-  spawn("syncthing", ["serve", "--no-browser", "--logfile", path.join(app.getPath('home'), ".kaya-syncthing.log")]);
+  const kayaDir = path.join(app.getPath('home'), ".kaya");
+  fs.mkdir(kayaDir, { recursive: true }, (err: any) => {
+    if (err) throw err;
+  }); 
+  spawn("syncthing", ["serve", "--no-browser", "--logfile", path.join(kayaDir, "syncthing.log")]);
 }
 
 const getHomeDir = (): string => {
