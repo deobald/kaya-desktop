@@ -27,11 +27,11 @@
     * [ ] show existing paired devices
     * [ ] alert when `DeviceConnected` and offer to pair back
     * [ ] click emoji to add
-* [ ] folder
+* [x] folder
     * [x] auto-create `~/.kaya`
     * [x] add to folder list
-    * [ ] logs in `~/.kaya/logs`
-    * [ ] back up existing to `~/.kaya.bak`? or just leave it?
+    * [x] logs in `~/.kaya/logs`
+    * [x] back up existing to `~/.kaya.bak`? or just leave it? ... just leave it for now.
 * [ ] sync
     * [ ] add folder to config - on device add?
 
