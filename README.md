@@ -32,6 +32,7 @@
     * [x] add to folder list
     * [x] logs in `~/.kaya/logs`
     * [x] back up existing to `~/.kaya.bak`? or just leave it? ... just leave it for now.
+    * [ ] add paired device to folder push
 * [ ] sync
     * [ ] add folder to config - on device add?
 

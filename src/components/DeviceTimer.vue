@@ -6,6 +6,19 @@ import path from 'path';
 import { createStDevice, createDeviceLogo, createDeviceColor } from '../devices';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
+const whoami = reactive({
+  style: 'fa-regular',
+  value: 'fa-circle-question',
+  color: '#df4655',
+  pollInterval: null
+})
+const neighbours = ref([])
+const pairedDevices = ref([]);
+const events = reactive({
+  value: null,
+  pollInterval: null
+});
+
 const getHomeDir = (): string => {
   // TODO: get this out of the UI
   const homeDir = document.getElementById('home-dir').innerHTML;
@@ -32,19 +45,6 @@ const request = (): {} => {
     headers: headersWithKey()
   }
 }
-
-const whoami = reactive({
-  style: 'fa-regular',
-  value: 'fa-circle-question',
-  color: '#df4655',
-  pollInterval: null
-})
-const neighbours = ref([])
-const pairedDevices = ref([]);
-const events = reactive({
-  value: null,
-  pollInterval: null
-});
 
 const askWhoami = (): void => {
   const path = `/rest/noauth/health`;
@@ -126,12 +126,17 @@ const pairWith = (deviceID:string): void => {
 };
 
 const pushKayaFolder = (): void => {
+  if (pairedDevices.value.length <= 1) {
+    throw Error("Please pair with another device or wait until it is visible.");
+  }
+
   const kayaFolder = {
     id: "kaya",
     path: [getHomeDir(), ".kaya"].join("/"), // TODO: this sucks, but path.join() doesn't exist in Vue client code
     filesystemType: "basic", 
-    type: "sendreceive"
-  }
+    type: "sendreceive",
+    devices: pairedDevices.value.map(id => { return {deviceID: id}; })
+  };
 
   const uriPath = `/rest/config/folders`;
   fetch(`http://localhost:8384${uriPath}`, { 
