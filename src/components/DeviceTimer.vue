@@ -2,8 +2,18 @@
 import { onMounted } from 'vue';
 import { reactive, computed } from 'vue'
 import { ref } from 'vue';
+import path from 'path';
 import { createStDevice, createDeviceLogo, createDeviceColor } from '../devices';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+const getHomeDir = (): string => {
+  // TODO: get this out of the UI
+  const homeDir = document.getElementById('home-dir').innerHTML;
+  if (homeDir === "") {
+    throw Error("Home directory not set.");
+  }
+  return homeDir;
+}
 
 const headersWithKey = (): {} => {
   // TODO: obviously don't pass data arond in the UI ...rrriiiiiiight?
@@ -78,6 +88,23 @@ const checkNeighbours = (): void => {
     });
 };
 
+const checkRemoteDevices = (): void => {
+  const path = `/rest/config/devices`;
+  fetch(`http://localhost:8384${path}`, request())
+  .then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.log("### Request failed with:");
+      response.text().then((text: any) => console.log(text));
+    }
+  })
+  .then(data => {
+    pairedDevices.value = data.map((dev: { deviceID: any; }) => dev.deviceID);
+  })
+  .catch(error => console.dir(error));
+};
+
 const pairWith = (deviceID:string): void => {
   const newDevice = createStDevice(deviceID);
 
@@ -98,6 +125,31 @@ const pairWith = (deviceID:string): void => {
   .catch(error => console.dir(error));
 };
 
+const pushKayaFolder = (): void => {
+  const kayaFolder = {
+    id: "kaya",
+    path: [getHomeDir(), ".kaya"].join("/"), // TODO: this sucks, but path.join() doesn't exist in Vue client code
+    filesystemType: "basic", 
+    type: "sendreceive"
+  }
+
+  const uriPath = `/rest/config/folders`;
+  fetch(`http://localhost:8384${uriPath}`, { 
+    method: 'POST',
+    headers: headersWithKey(),
+    body: JSON.stringify(kayaFolder)
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log("### Folder Posted");
+    } else {
+      console.log("### Request failed with:");
+      response.text().then(text => console.log(text));
+    }
+  })
+  .catch(error => console.dir(error));
+};
+
 const fetchDiscovery = (): void => {
   let req = {};
   try { 
@@ -107,13 +159,14 @@ const fetchDiscovery = (): void => {
     return;
   }
   
-  const path = '/rest/events?events=DeviceDiscovered'; // DeviceConnected,
+  const path = '/rest/events?events=DeviceConnected,DeviceDiscovered';
   // net::ERR_INSUFFICIENT_RESOURCES
   fetch(`http://localhost:8384${path}`, req)
     .then(response => response.json())
     .then(data => {
       events.value = data.map((e:any) => e.id);
       checkNeighbours();
+      checkRemoteDevices();
     });
 };
 
@@ -138,6 +191,11 @@ onMounted(() => {
           <font-awesome-icon :style="{color: neighbour.color}" :icon="[neighbour.style, neighbour.value]" size="3x" fixed-width />
       </button>
       </div>
+    </div>
+
+    <div>
+      <label>Add Kaya Folder:</label>
+      <button @click="pushKayaFolder()">Add Folder</button>
     </div>
 
     <hr />

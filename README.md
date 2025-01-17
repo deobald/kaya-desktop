@@ -8,6 +8,7 @@
     * [-] fix memory leak in SyncthingServiceTimer @ `fetch('.../health');`
                           and DeviceTimer @ `fetch'...?events=DeviceDiscovered');`
     * [ ] device = tux/win/mac + name + emoji
+    * [ ] why does "Who Am I?" sometimes switch back to a question mark?
 * [x] syncthing serve
     * [x] attempt to start
     * [x] check if it's running again
@@ -27,7 +28,9 @@
     * [ ] alert when `DeviceConnected` and offer to pair back
     * [ ] click emoji to add
 * [ ] folder
-    * [ ] auto-create `~/.kaya`
+    * [x] auto-create `~/.kaya`
+    * [x] add to folder list
+    * [ ] logs in `~/.kaya/logs`
     * [ ] back up existing to `~/.kaya.bak`? or just leave it?
 * [ ] sync
     * [ ] add folder to config - on device add?

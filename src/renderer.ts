@@ -3,11 +3,17 @@ import './assets/main.css'
 import { createApp } from 'vue'
 import App from './App.vue'
 
+const homeDir = document.getElementById('home-dir')
+window.electronAPI.onSetHomeDir((value:string) => {
+  console.log("### Renderer received call to setHomeDir()");
+  homeDir.innerText = value;
+});
+
 const apiKey = document.getElementById('api-key')
 window.electronAPI.onSetApiKey((value:string) => {
   console.log("### Renderer received call to setApiKey()");
   apiKey.innerText = value;
-})
+});
 
 // FontAwesome nonsense
 import { library } from '@fortawesome/fontawesome-svg-core'

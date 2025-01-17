@@ -10,6 +10,7 @@ import { XMLParser } from 'fast-xml-parser';
 // HACK: find the tray with some sort of channeling or singaling instead
 let tray:Tray = null;
 let window:BrowserWindow = null;
+let homeDir:string = null;
 let apiKey:string = null;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -43,7 +44,8 @@ const createWindow = () => {
   // 'did-finish-load' is the only trustworthy event we can use to identify 
   // when the render process is ready to receive IPC messages:
   mainWindow.webContents.on('did-finish-load', () => {
-    console.log("### Main Window finished loading. Setting API key...");
+    console.log("### Main Window finished loading. Setting $HOME and API key...");
+    mainWindow.webContents.send('set-home-dir', homeDir);
     mainWindow.webContents.send('set-api-key', apiKey);
   });
 
@@ -115,6 +117,7 @@ const onClickQuit = (menuItem:MenuItem, window:BaseWindow, e:KeyboardEvent): voi
 
 const onClickShow = (menuItem:MenuItem, window:BaseWindow, e:KeyboardEvent): void => {
   findWindow().show();
+  // TODO: is this necessary at all?
   // Send the API KEY
   console.log(`send: set-api-key to ${process.env.SYNCTHING_API_KEY}`);
   findWindow().webContents.send('set-api-key', process.env.SYNCTHING_API_KEY);
@@ -134,6 +137,10 @@ const getConfigXml = (path:string): string => {
 const startSyncthing = (): void => {
   spawn("syncthing", ["serve", "--no-browser", "--logfile", path.join(app.getPath('home'), ".kaya-syncthing.log")]);
 }
+
+const getHomeDir = (): string => {
+  return process.env.HOME;
+};
 
 const getApiKey = (): string => {
   const winPath = path.join(process.env.LOCALAPPDATA || "", "Syncthing", "config.xml");
@@ -175,7 +182,11 @@ app.whenReady().then(() => {
     onWindowHide();
   }
 
-  console.log("Finding API key from configuration...");
+  console.log("Finding $HOME and API key from configuration...");
+  homeDir = getHomeDir();
+  console.log("send: set-home-dir");
+  findWindow().webContents.send('set-home-dir', homeDir);
+
   apiKey = getApiKey();
   console.log("API Key:");
   console.log(apiKey);

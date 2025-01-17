@@ -65,6 +65,7 @@
 }
 
 // GET /rest/config/devices
+// (in array)
 { "deviceID": "4MUBFHP-IJKZKCY-QFUI7I6-OHYGHIF-XCUSWZX-ZXPPTHH-YXF2YPF-PASAXAS", 
   "name": "solasa.local", 
   "addresses": [ "dynamic" ], 
@@ -85,6 +86,7 @@
   "numConnections": 0 },
 
 // GET /rest/config/folders
+// (in array)
 { "id": "default", 
   "label": "Default Folder", 
   "filesystemType": "basic", 
@@ -125,6 +127,13 @@
   "syncXattrs": false, 
   "sendXattrs": false, 
   "xattrFilter": { "entries": [], "maxSingleEntrySize": 1024, "maxTotalSize": 4096 } }
+
+  [ { "id": "default", 
+      "label": "Default Folder", 
+      "filesystemType": "basic", 
+      "path": "/home/steven/Sync", 
+      "type": "sendreceive", 
+      "devices": [ { "deviceID": "FRQBXN4-ZYUYETS-3ST4Q5P-UZKUD4O-IM2A53D-NDU733Y-4QKFC23-JBRJKQ2", "introducedBy": "", "encryptionPassword": "" } ], "rescanIntervalS": 3600, "fsWatcherEnabled": true, "fsWatcherDelayS": 10, "fsWatcherTimeoutS": 0, "ignorePerms": false, "autoNormalize": true, "minDiskFree": { "value": 1, "unit": "%" }, "versioning": { "type": "", "params": {}, "cleanupIntervalS": 3600, "fsPath": "", "fsType": "basic" }, "copiers": 0, "pullerMaxPendingKiB": 0, "hashers": 0, "order": "random", "ignoreDelete": false, "scanProgressIntervalS": 0, "pullerPauseS": 0, "maxConflicts": 10, "disableSparseFiles": false, "disableTempIndexes": false, "paused": false, "weakHashThresholdPct": 25, "markerName": ".stfolder", "copyOwnershipFromParent": false, "modTimeWindowS": 0, "maxConcurrentWrites": 2, "disableFsync": false, "blockPullOrder": "standard", "copyRangeMethod": "standard", "caseSensitiveFS": false, "junctionsAsDirs": false, "syncOwnership": false, "sendOwnership": false, "syncXattrs": false, "sendXattrs": false, "xattrFilter": { "entries": [], "maxSingleEntrySize": 1024, "maxTotalSize": 4096 } }, { "id": "rhzjf-x4f2m", "label": "", "filesystemType": "basic", "path": "~/rhzjf-x4f2m", "type": "sendreceive", "devices": [ { "deviceID": "FRQBXN4-ZYUYETS-3ST4Q5P-UZKUD4O-IM2A53D-NDU733Y-4QKFC23-JBRJKQ2", "introducedBy": "", "encryptionPassword": "" }, { "deviceID": "4MUBFHP-IJKZKCY-QFUI7I6-OHYGHIF-XCUSWZX-ZXPPTHH-YXF2YPF-PASAXAS", "introducedBy": "", "encryptionPassword": "" } ], "rescanIntervalS": 3600, "fsWatcherEnabled": true, "fsWatcherDelayS": 10, "fsWatcherTimeoutS": 0, "ignorePerms": false, "autoNormalize": true, "minDiskFree": { "value": 1, "unit": "%" }, "versioning": { "type": "", "params": {}, "cleanupIntervalS": 3600, "fsPath": "", "fsType": "basic" }, "copiers": 0, "pullerMaxPendingKiB": 0, "hashers": 0, "order": "random", "ignoreDelete": false, "scanProgressIntervalS": 0, "pullerPauseS": 0, "maxConflicts": 10, "disableSparseFiles": false, "disableTempIndexes": false, "paused": false, "weakHashThresholdPct": 25, "markerName": ".stfolder", "copyOwnershipFromParent": false, "modTimeWindowS": 0, "maxConcurrentWrites": 2, "disableFsync": false, "blockPullOrder": "standard", "copyRangeMethod": "standard", "caseSensitiveFS": false, "junctionsAsDirs": false, "syncOwnership": false, "sendOwnership": false, "syncXattrs": false, "sendXattrs": false, "xattrFilter": { "entries": [], "maxSingleEntrySize": 1024, "maxTotalSize": 4096 } } ]
 
 
 ]

@@ -10,6 +10,7 @@ const neighbours = ref(null);
 const lastPair = ref(null);
 const devices = ref(null);
 const events = ref(null);
+const folders = ref(null);
 
 const headersWithKey = (): {} => {
   // TODO: obviously don't pass data arond in the UI ...rrriiiiiiight?
@@ -59,6 +60,13 @@ const checkEvents = (): void => {
   fetch(`http://localhost:8384${path}`, request())
     .then(response => response.json())
     .then(data => events.value = data);
+};
+
+const listFolders = (): void => {
+  const path = '/rest/config/folders';
+  fetch(`http://localhost:8384${path}`, request())
+    .then(response => response.json())
+    .then(data => folders.value = data);
 };
 
 const pairWith = (deviceID:string): void => {
@@ -119,8 +127,13 @@ const createFolder = (): void => {
       <label>Events:</label>
       <p>{{ events }}</p>
     </div>
-    <button @click="createFolder()">Create Folder</button>
-    
+    <!-- <button @click="createFolder()">Create Folder</button> -->
+    <div>
+      <button @click="listFolders()">List Folders</button>
+      <label>Folders:</label>
+      <p>{{ folders }}</p>
+    </div>
+
     <!-- <h1 class="green">{{ msg }}</h1> -->
     
   </div>
